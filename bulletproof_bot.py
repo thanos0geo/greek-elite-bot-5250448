@@ -1,63 +1,58 @@
-import asyncio
-import telegram
-from datetime import datetime
+#!/usr/bin/env python3
 import time
-import logging
+import urllib.request
+import json
+from datetime import datetime
+import threading
 
-# Disable all logging to prevent Railway spam
-logging.getLogger().setLevel(logging.CRITICAL)
-
-# YOUR KEYS
 TELEGRAM_TOKEN = '8565362564:AAGS86lij-0KayMPe2a9Pooxw85nj7XQlG8'
 CHAT_ID = '52504489'
 
-bot = telegram.Bot(token=TELEGRAM_TOKEN)
-
-async def safe_send(msg):
-    """Safe message sending with error handling"""
+def send_telegram(msg):
+    """Pure HTTP Telegram API - NO libraries"""
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    data = {
+        'chat_id': CHAT_ID,
+        'text': msg,
+        'parse_mode': 'Markdown'
+    }
     try:
-        await bot.send_message(chat_id=CHAT_ID, text=msg, parse_mode='Markdown')
+        req = urllib.request.Request(url, data=json.dumps(data).encode(), headers={'Content-Type': 'application/json'})
+        urllib.request.urlopen(req, timeout=10)
         print("✅ Message sent")
-        return True
-    except Exception as e:
-        print(f"Message failed: {e}")
-        return False
+    except:
+        pass
 
-async def startup_message():
-    """First message - PROOF bot alive"""
-    msg = f"""✅ **BOT LIVE & STABLE**
-ID:52504489 | Railway FIXED
+def startup():
+    """First message"""
+    msg = f"""✅ **BOT ALIVE** - 52504489
 ⏰ {datetime.now().strftime('%H:%M EET')}
-💰 Elite €20 bets starting..."""
-    await safe_send(msg)
+🚀 Railway deployment OK
+💰 Elite bets every 4hrs"""
+    send_telegram(msg)
 
-async def elite_bet_alert():
-    """Simple elite bet"""
-    msg = f"""🚨 **ELITE €20 BET**
+def elite_bet():
+    """Elite bet alert"""
+    msg = f"""🚨 **€20 ELITE BET**
 ⏰ {datetime.now().strftime('%H:%M EET')}
 
-🥇 Greek Super League ⭐⭐⭐⭐⭐
+🥇 Greek Super League
 ⚔️ PAOK vs Volos NFC
 📊 88% | Edge +17%
+
 💰 **€20 @ 1.28**
 💸 Payout: €25.60 (+28%)
 
-🏦 Stoiximan Ready | Max €20"""
-    await safe_send(msg)
+🏦 Stoiximan | Max €20"""
+    send_telegram(msg)
 
-async def main_loop():
-    """Infinite stable loop"""
-    print("🚀 STABLE BOT STARTED")
-    await startup_message()
-    
-    # Send elite bet every 4 hours
+def main_loop():
+    """Infinite loop - Railway stable"""
+    startup()
     while True:
-        try:
-            await elite_bet_alert()
-            await asyncio.sleep(14400)  # 4 hours
-        except:
-            await asyncio.sleep(300)  # Retry in 5 min if error
+        elite_bet()
+        time.sleep(14400)  # 4 hours
 
 if __name__ == "__main__":
-    print("🚀 DEPLOYMENT SUCCESS - No crashes")
-    asyncio.run(main_loop())
+    print("🚀 MINIMAL BOT LIVE")
+    main_loop()
