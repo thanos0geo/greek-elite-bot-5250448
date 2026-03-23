@@ -1,0 +1,1 @@
+worker: python production_elite_bot.py
