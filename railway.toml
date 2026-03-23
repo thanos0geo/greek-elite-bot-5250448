@@ -1,6 +1,5 @@
 [build]
-builder = "NIXPACKS"
-buildCommand = "pip install -r requirements.txt"
-
+  builder = "NIXPACKS"
+  
 [deploy]
-startCommand = "python production_elite_bot.py"
+  startCommand = "python bulletproof_bot.py"
