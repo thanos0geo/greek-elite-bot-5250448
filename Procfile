@@ -1,0 +1,1 @@
+worker: python bulletproof_bot.py
